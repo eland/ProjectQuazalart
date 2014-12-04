@@ -20,6 +20,5 @@ module.exports = function (io, socket) {
     }
 
     socket.emit('user', state.users[name]);
-    socket.emit('question', deck.currentQuestion);
   };
 };

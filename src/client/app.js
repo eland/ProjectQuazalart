@@ -28,19 +28,24 @@ socket.on('authenticate', function () {
 var user;
 socket.on('user', function (_user) {
   user = _user;
+  $('.hand').empty();
   user.hand.forEach(function (card) {
-    $('.hand').append($('<div class="card">').text(card.text));
+    $('.hand').append($('<div class="card hand-card">').data('card', card).text(
+      card.text));
   });
 });
 
-var question;
-socket.on('question', function (_question) {
-  question = _question;
-  $('.question').text(question.text);
+socket.on('roundUpdated', function (round) {
+  $('.question').text(round.question.text);
+  $('.answers').empty();
+
+  Object.keys(round.submittedAnswers).forEach(function (key) {
+    $('.answers').append($('<div class="card">').text(round.submittedAnswers[key].text));
+  });
 });
 
-var submittedAnswers = [];
-socket.on('answerSubmitted', function (answer) {
-  submittedAnswers.push(answer);
-  $('.answers').append($('<div class="card">').text(answer.text));
+$(document).on('click', '.hand-card', function () {
+  element = $(this);
+  socket.emit('answerSubmitted', element.data('card'));
+  return false;
 });

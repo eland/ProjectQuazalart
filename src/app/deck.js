@@ -3,7 +3,6 @@ var cards = require('../data/cards');
 function deck() {
   this.questions = [];
   this.answers = [];
-  this.currentQuestion = {};
 
   this.populate = function () {
     this.answers = cards.filter(function (card) {
@@ -32,8 +31,7 @@ function deck() {
   };
 
   this.dealQuestion = function () {
-    this.currentQuestion = this.questions.pop();
-    return this.currentQuestion;
+    return this.questions.pop();
   };
 }
 
