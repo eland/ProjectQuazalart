@@ -1,5 +1,5 @@
 {
-  "name": "cards against humanity hackzors",
+  "name": "projectQuazalart",
   "version": "0.0.1",
   "description": "A Cards Against Humanity hackathon project to explore nodejs/socket.io with some fellow devs",
   "dependencies": {
