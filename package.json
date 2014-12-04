@@ -1,7 +1,7 @@
 {
-  "name": "socket-chat-example",
+  "name": "cards against humanity hackzors",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "description": "A Cards Against Humanity hackathon project to explore nodejs/socket.io with some fellow devs",
   "dependencies": {
     "express": "^4.10.2",
     "socket.io": "^1.2.1"
