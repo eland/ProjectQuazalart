@@ -1,9 +1,15 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
 var state = require('./app/state');
-var User = require('./app/User');
-var userMap = {};
+var deck = require('./app/deck');
+
+var login = require('./app/actions/login');
+
+deck.populate();
+deck.shuffle();
+deck.dealQuestion();
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/client/index.html');
@@ -16,23 +22,17 @@ app.get('/app.js', function (req, res) {
 io.on('connection', function (socket) {
   console.log('a user connected');
   socket.emit('authenticate');
-  socket.on('login', function (name) {
-    if (name) {
-      var newUser = new User({
-        name: name
-      });
-      io.emit('chat message', newUser.name + " is logged in");
-      userMap[socket.id] = newUser.name;
-      state.users[name] = newUser;
-    }
-  });
+
+  socket.on('login', login(io, socket));
+
   socket.on('disconnect', function () {
-    delete userMap[socket.id];
+    delete state.userMap[socket.id];
     console.log('user disconnected');
   });
+
   socket.on('chat message', function (msg) {
     console.log('message: ' + msg);
-    io.emit('chat message', userMap[socket.id] + ': ' + msg);
+    io.emit('chat message', state.userMap[socket.id] + ': ' + msg);
   });
 });
 
