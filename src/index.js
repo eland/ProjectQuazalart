@@ -8,16 +8,19 @@ var Round = require('./app/round');
 var login = require('./app/actions/login');
 var answerSubmitted = require('./app/actions/answerSubmitted');
 
-deck.populate();
-deck.shuffle();
-state.round = new Round({
-  question: deck.dealQuestion()
-});
+function initGame() {
+  deck.populate();
+  deck.shuffle();
+  state.newGame();
+  state.round = new Round({
+    question: deck.dealQuestion()
+  });
+}
+initGame();
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/client/index.html');
 });
-
 app.get('/app.js', function (req, res) {
   res.sendFile(__dirname + '/client/app.js');
 });
@@ -45,10 +48,12 @@ io.on('connection', function (socket) {
       startRound();
       io.emit('roundUpdated', state.round);
     }
-    state.users[name].isActive = false;
-    delete state.userMap[socket.id];
-    io.emit('scoreUpdated', state.getUserScores());
-    console.log(name, 'disconnected');
+    if (state.users[name]) {
+      state.users[name].isActive = false;
+      delete state.userMap[socket.id];
+      io.emit('scoreUpdated', state.getUserScores());
+      console.log(name, 'disconnected');
+    }
   });
 
   socket.on('chat message', function (msg) {
@@ -61,10 +66,16 @@ io.on('connection', function (socket) {
   socket.on('answerChosen', function (name) {
     state.users[name].score++;
     io.emit('scoreUpdated', state.getUserScores());
-    startRound();
+    if (state.users[name].score > 10) {
+      io.emit("gameOver", name);
+      initGame();
+      return;
+    } else {
+      startRound();
 
-    console.log('answer chosen! Round winner:', name);
-    io.emit('roundUpdated', state.round);
+      console.log('answer chosen! Round winner:', name);
+      io.emit('roundUpdated', state.round);
+    }
   });
 });
 

@@ -5,7 +5,7 @@ module.exports = function (io, socket) {
   return function (card) {
     var name = state.userMap[socket.id];
 
-    if (state.users[name] &&
+    if (state.users[name] && state.users[name].isActive &&
       !state.round.submittedAnswers.hasOwnProperty(name) &&
       state.round.czar.name !== name) {
 

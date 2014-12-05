@@ -41,8 +41,13 @@ socket.on('roundUpdated', function (_round) {
   $('.question').text(round.question.text);
   $('.answers').empty();
   Object.keys(round.submittedAnswers).forEach(function (key) {
-    $('.answers').append($('<div class="card answer-card">').data('name', key).text(round.submittedAnswers[key]
-      .text));
+    if (round.czarTime) {
+      $('.answers').append($('<div class="card answer-card">').data('name', key).text(round.submittedAnswers[
+          key]
+        .text));
+    } else {
+      $('.answers').append($('<div class="card answer-card">').text("*************"));
+    }
   });
   if (user.name === round.czar.name) {
     $('.hand').addClass('czar');
@@ -58,7 +63,9 @@ socket.on('scoreUpdated', function (_userScores) {
   });
 
 });
-
+socket.on('gameOver', function (winner) {
+  $('html').html('<h1><pre>The winner is: ' + winner + '</pre></h1>');
+});
 $(document).on('click', '.hand-card', function () {
   element = $(this);
   socket.emit('answerSubmitted', element.data('card'));
