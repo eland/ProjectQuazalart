@@ -82,17 +82,33 @@ function UpdateScore(_clientState) {
   }
   clientState = _clientState;
   var scoreboard = clientState.scoreboard;
+  var scorelist = {};
   $('.scores').empty();
   scoreboard.currentScores.forEach(function (userScore) {
+    scorelist[userScore.name] = [];
+  });
+
+  scoreboard.rounds.forEach(function (round) {
+    Object.keys(scorelist).forEach(function (name) {
+      if (round.winner === name) {
+        scorelist[name].push('+');
+      } else {
+        scorelist[name].push('-');
+      }
+    });
+  });
+
+  Object.keys(scorelist).forEach(function (name) {
     var score = $('<li class="score">');
-    console.log('username', userScore.name);
-    console.log('czar', clientState.czar);
-    if (userScore.name === clientState.czar) {
+    if (name === clientState.czar) {
       score.addClass('czar');
     }
-    $('.scores').append(score.text(userScore.name + ': ' + userScore.score).data('name',
-      userScore.name));
+    $('.scores').append(score.text(name + ': '));
+    scorelist[name].forEach(function (scores) {
+      score.append($('<span>').text(scores));
+    });
   });
+
   var numberOfRounds = scoreboard.rounds.length;
   if (numberOfRounds > 0) {
     var lastRound = scoreboard.rounds[numberOfRounds - 1];
