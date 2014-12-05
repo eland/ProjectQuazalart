@@ -52,23 +52,57 @@
     }
 
     .black_card:hover{
-      cursor: none;
+      cursor: default;
       position:relative;
       top:0;
     }
 
-    .scores{
+    .scorebox {
+      flex-basis:100%;
+    }
 
+    .scores {
+      display: flex;
+    }
+    .scores li {
+      flex-flow: row wrap;
+      padding-right:20px;
+    }
+
+    .previous-round {
+      background-color: teal;
+      width: 300px;
+      min-height:30px;
+    }
+
+    .last-answer {
+      background-color: yellow;
+    }
+
+    .hand{
+      min-width:400px;
+    }
+    @media screen and (max-width: 500px) {
+      .boxes {
+        flex-flow: column wrap;
+      }
     }
   </style>
 </head>
 <body>
   <div class="boxes">
+    <div class="scorebox box">
+      <ul class="scores">
+      </ul>
+      <div class="previous-round last-question"></div>
+      <div class="previous-round last-answer"></div>
+      <div class="previous-round last-winner"></div>
+    </div>
     <div class="box">
-      <div class="question card black_card" ></div>
+      <div class="current-question question card black_card" ></div>
       <div class="answers"></div>
     </div>
-    <div class="hand box">
+    <div class="box hand">
     </div>
     <div class="box">
       <ul id="messages"></ul>
@@ -76,15 +110,8 @@
         <input id="message-input" autocomplete="off" /><button>Send</button>
       </form>
     </div>
-    <div class="box">
-      <ul class="scores">
-      </ul>
-      <div class="box">
-    </div>
-  </div>
-
-  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/app.js"></script>
-</body>
-</html>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+  </body>
+  </html>

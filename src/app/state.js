@@ -17,19 +17,6 @@ var state = {
     console.log(this.czarQueue);
     return this.users[this.czarQueue[0]];
   },
-  getUserScores: function () {
-    var userScores = [];
-    var users = this.users;
-    Object.keys(users).forEach(function (name) {
-      if (users[name].isActive) {
-        userScores.push({
-          "name": name,
-          score: users[name].score
-        });
-      }
-    });
-    return userScores;
-  },
   newGame: function () {
     this.deck = deck;
     this.users = {};

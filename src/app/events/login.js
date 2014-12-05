@@ -1,6 +1,7 @@
 var state = require('../state');
 var User = require('../User');
 var deck = require('../deck');
+var score = require('../score');
 
 module.exports = function (io, socket) {
   return function (name) {
@@ -29,6 +30,6 @@ module.exports = function (io, socket) {
 
     socket.emit('user', state.users[name]);
     socket.emit('roundUpdated', state.round);
-    io.emit('scoreUpdated', state.getUserScores());
+    io.emit('scoreUpdated', score.scoreboard());
   };
 };

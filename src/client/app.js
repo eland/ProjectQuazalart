@@ -1,3 +1,4 @@
+var isGameOver = false;
 var socket = io();
 socket.on('chat message', function (msg) {
   $('#messages').append($('<li>').text(msg));
@@ -37,8 +38,11 @@ socket.on('user', function (_user) {
 
 var round = {};
 socket.on('roundUpdated', function (_round) {
+  if (isGameOver) {
+    return;
+  }
   round = _round;
-  $('.question').text(round.question.text);
+  $('.current-question').text(round.question.text);
   $('.answers').empty();
   Object.keys(round.submittedAnswers).forEach(function (key) {
     if (round.czarTime) {
@@ -56,15 +60,33 @@ socket.on('roundUpdated', function (_round) {
   }
 });
 
-socket.on('scoreUpdated', function (_userScores) {
+socket.on('scoreUpdated', function (scoreboard) {
+  if (isGameOver) {
+    return;
+  }
   $('.scores').empty();
-  _userScores.forEach(function (userScore) {
+  scoreboard.currentScores.forEach(function (userScore) {
     $('.scores').append($('<li class="score">').text(userScore.name + ': ' + userScore.score));
   });
+  var numberOfRounds = scoreboard.rounds.length;
+  if (numberOfRounds > 0) {
+    var lastRound = scoreboard.rounds[numberOfRounds - 1];
+    $('.last-question').text(lastRound.question.text);
+    $('.last-answer').text(lastRound.winningAnswer.text);
+    $('.last-winner').text(lastRound.winner);
+  } else {
+    $('.last-question, .last-answer, .last-winner').text('');
+  }
 
 });
-socket.on('gameOver', function (winner) {
-  $('html').html('<h1><pre>The winner is: ' + winner + '</pre></h1>');
+socket.on('gameOver', function (rounds) {
+  var winner = rounds[0].winner;
+  $('body').html('<h1><pre>The winner is: ' + winner + '</pre></h1>');
+  rounds.forEach(function (round) {
+    $('body').append($('<div class="question card black_card">').text(round.question.text)).append($(
+      '<div class="card">').text(round.winningAnswer.text));
+  });
+  isGameOver = true;
 });
 $(document).on('click', '.hand-card', function () {
   element = $(this);

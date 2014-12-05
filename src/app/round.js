@@ -3,6 +3,8 @@ function Round(options) {
   this.czar = options.czar || {};
   this.question = options.question || {};
   this.czarTime = options.czarTime || false;
+  this.winningAnswer = '';
+  this.winner = '';
 }
 
 module.exports = Round;
