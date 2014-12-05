@@ -7,35 +7,36 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font: 13px Helvetica, Arial; }
     form {
-      background: #000;
       padding: 3px;
       bottom: 0;
       width:100%;
     }
     form input { border: 0;
       padding: 10px;
-      width: 90%;
+      width: calc(100% - 75px);
       margin-right: .5%;
+      font-size:1.2em;
     }
     form button {
-      width: 9%;
-      background: rgb(130, 224, 255);
+      width: 70px;
       border: none;
-      padding: 10px;
+      padding: 7px;
+      background-color: teal;
+      color: white;
+      font-size: 1.2em
     }
 
     #messages {
       list-style-type: none;
       margin: 0;
       padding: 0;
-      overflow: scroll;
+      overflow-y: scroll;
       height:250px;
+      padding-right:10px;
+      font-size: 1.1em
     }
     #messages li {
       padding: 5px 10px;
-    }
-    #messages li:nth-child(odd) {
-      background: #eee;
     }
 
     .boxes {
@@ -59,15 +60,20 @@
 
     .scorebox {
       flex-basis:100%;
+      background-color: #222;
+      color: #fff;
     }
 
     .scores {
       display: flex;
+      flex-wrap: wrap;
     }
-    .scores li {
+    .score {
       flex-flow: row wrap;
       padding-right:20px;
-
+      margin:12px;
+      list-style: none;
+      font-size: 1.5em;
     }
 
     .czar {
@@ -94,6 +100,7 @@
 
     .hand{
       min-width:400px;
+      padding-left:10px;
     }
     .selected-hand-card{
       border: 1px solid blue;
@@ -101,8 +108,29 @@
 
     .answer-group{
       display: flex;
-      border-bottom: 3px solid red;
+      border-bottom: 3px dotted #777;
+      /*border-bottom: 3px solid red;*/
       padding: 20px;
+    }
+
+    .grey {
+      background-color: #Ccc;
+      color: #999;
+      cursor:default;
+    }
+    .grey:hover{
+      cursor:default;
+      top:0;
+    }
+
+    .playing-field {
+      border-right: 1px solid #777;
+    }
+
+    .barbar {
+      background-color: #ddd;
+      padding: 15px;
+      margin: 5px;
     }
 
     .clearfix{
@@ -121,13 +149,13 @@
       <ul class="scores">
       </ul>
     </div>
-    <div class="box">
+    <div class="playing-field box">
       <div class="current-question question card black_card" ></div>
       <div class="answers"></div>
     </div>
     <div class="box hand">
     </div>
-    <div class="box">
+    <div class="box barbar">
       <ul id="messages"></ul>
       <form action="">
         <input id="message-input" autocomplete="off" /><button>Send</button>
