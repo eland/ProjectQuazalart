@@ -37,9 +37,10 @@ socket.on('user', function (_user) {
 });
 
 function appendAnswer(answers, name, placeholder) {
-  var answerGroup = $('<div class="answer-group">');
+  var answerGroup = $('<div>');
   if (answers.length > 1) {
     answerGroup.addClass('clearfix');
+    answerGroup.addClass('answer-group');
   }
   answers.forEach(function (answer) {
     console.log(answer || placeholder);
@@ -123,7 +124,7 @@ socket.on('gameOver', function (rounds) {
 var selectedAnswers = [];
 $(document).on('click', '.hand-card', function () {
   var round = clientState.currentRound;
-  if (round.submittedAnswers.hasOwnProperty(user.name) || round.czar === user.name) {
+  if (round.submittedAnswers.hasOwnProperty(user.name) || clientState.czar === user.name) {
     return;
   }
   element = $(this);

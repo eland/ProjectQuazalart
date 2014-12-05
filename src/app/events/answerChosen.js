@@ -6,7 +6,6 @@ var initGame = require('../actions/initGame');
 
 module.exports = function (io) {
   return function (name) {
-    console.log(name);
     state.users[name].score++;
     var selectedAnswers = state.round.submittedAnswers[name];
     state.round.winningAnswers = selectedAnswers;

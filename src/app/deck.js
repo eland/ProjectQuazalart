@@ -10,8 +10,7 @@ function deck() {
     });
 
     this.questions = cards.filter(function (card) {
-      return card.cardType === 'Q' &&
-        card.numAnswers === 3; //We'll tackle 2-answer questions later and haikus
+      return card.cardType === 'Q';
     });
   };
 
