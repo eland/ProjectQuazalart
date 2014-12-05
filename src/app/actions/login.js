@@ -9,6 +9,7 @@ module.exports = function (io, socket) {
     }
 
     io.emit('chat message', name + " is logged in");
+    console.log(name, "has connected");
     if (state.userMap[socket.id] !== name) {
       state.userMap[socket.id] = name;
       if (!state.users.hasOwnProperty(name)) {
@@ -19,6 +20,14 @@ module.exports = function (io, socket) {
       }
     }
 
+    state.users[name].isActive = true;
+    if (!state.round.czar.name) {
+      state.round.czar = state.users[name];
+      console.log("CZar!!!!", state.round.czar.name);
+    }
+    state.czarQueue.push(name);
+
     socket.emit('user', state.users[name]);
+    socket.emit('roundUpdated', state.round);
   };
 };

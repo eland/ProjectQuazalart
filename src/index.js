@@ -6,12 +6,12 @@ var state = require('./app/state');
 var deck = require('./app/deck');
 var Round = require('./app/round');
 var login = require('./app/actions/login');
+var answerSubmitted = require('./app/actions/answerSubmitted');
 
 deck.populate();
 deck.shuffle();
-var question = deck.dealQuestion();
-var round = new Round({
-  question: question
+state.round = new Round({
+  question: deck.dealQuestion()
 });
 
 app.get('/', function (req, res) {
@@ -23,15 +23,31 @@ app.get('/app.js', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-  console.log('a user connected');
   socket.emit('authenticate');
-  socket.emit('roundUpdated', round);
 
   socket.on('login', login(io, socket));
 
+  function startRound() {
+    var newCzar = state.nextCzar();
+    state.round = new Round({
+      question: deck.dealQuestion(),
+      czar: newCzar
+    });
+  }
+
   socket.on('disconnect', function () {
+    var name = state.userMap[socket.id];
+    var queueIndex = state.czarQueue.indexOf(name);
+    if (queueIndex > -1) {
+      state.czarQueue.splice(queueIndex, 1);
+    }
+    if (state.round.czar.name === name) {
+      startRound();
+      io.emit('roundUpdated', state.round);
+    }
+    state.users[name].isActive = false;
     delete state.userMap[socket.id];
-    console.log('user disconnected');
+    console.log(name, 'disconnected');
   });
 
   socket.on('chat message', function (msg) {
@@ -39,21 +55,15 @@ io.on('connection', function (socket) {
     io.emit('chat message', state.userMap[socket.id] + ': ' + msg);
   });
 
-  socket.on('answerSubmitted', function (card) {
-    var name = state.userMap[socket.id];
-    if (state.users[name] && !round.submittedAnswers.hasOwnProperty(name)) {
-      round.submittedAnswers[name] = card;
-      var user = state.users[name];
-      for (var i = 0; i < user.hand.length; i++) {
-        if (card.id === user.hand[i].id) {
-          user.hand.splice(i, 1);
-          user.hand.push(deck.dealAnswers(1)[0]);
-          socket.emit('user', user);
-          break;
-        }
-      }
-      io.emit('roundUpdated', round);
-    }
+  socket.on('answerSubmitted', answerSubmitted(io, socket));
+
+  socket.on('answerChosen', function (name) {
+    state.users[name].score++;
+
+    startRound();
+
+    console.log('answer chosen! Round winner:', name);
+    io.emit('roundUpdated', state.round);
   });
 });
 

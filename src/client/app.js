@@ -35,17 +35,32 @@ socket.on('user', function (_user) {
   });
 });
 
-socket.on('roundUpdated', function (round) {
+var round = {};
+socket.on('roundUpdated', function (_round) {
+  round = _round;
   $('.question').text(round.question.text);
   $('.answers').empty();
 
   Object.keys(round.submittedAnswers).forEach(function (key) {
-    $('.answers').append($('<div class="card">').text(round.submittedAnswers[key].text));
+    $('.answers').append($('<div class="card answer-card">').data('name', key).text(round.submittedAnswers[key]
+      .text));
   });
+  if (user.name === round.czar.name) {
+    $('.hand').addClass('czar');
+  } else {
+    $('.hand').removeClass('czar');
+  }
 });
 
 $(document).on('click', '.hand-card', function () {
   element = $(this);
   socket.emit('answerSubmitted', element.data('card'));
   return false;
+});
+
+$(document).on('click', '.answer-card', function () {
+  if (user && user.name === round.czar.name && round.czarTime) {
+    element = $(this);
+    socket.emit('answerChosen', element.data('name'));
+  }
 });
