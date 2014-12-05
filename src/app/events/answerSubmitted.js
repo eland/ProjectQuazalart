@@ -1,4 +1,6 @@
 var state = require('../state');
+var clientState = require('../clientState');
+var score = require('../score');
 var deck = require('../deck');
 
 module.exports = function (io, socket) {
@@ -38,7 +40,10 @@ module.exports = function (io, socket) {
         state.round.czarTime = true;
       }
 
-      io.emit('roundUpdated', state.round);
+      clientState.currentRound = state.round;
+      clientState.czar = state.round.czar.name;
+      clientState.scoreboard = score.scoreboard();
+      io.emit('roundUpdated', clientState);
     }
   };
 };

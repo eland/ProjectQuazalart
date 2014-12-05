@@ -37,11 +37,11 @@ socket.on('user', function (_user) {
 });
 
 var round = {};
-socket.on('roundUpdated', function (_round) {
+socket.on('roundUpdated', function (clientState) {
   if (isGameOver) {
     return;
   }
-  round = _round;
+  round = clientState.currentRound;
   $('.current-question').text(round.question.text);
   $('.answers').empty();
   Object.keys(round.submittedAnswers).forEach(function (key) {
@@ -53,20 +53,30 @@ socket.on('roundUpdated', function (_round) {
       $('.answers').append($('<div class="card answer-card">').text("Cards Against Humanity"));
     }
   });
-  if (user.name === round.czar.name) {
+  if (user.name === clientState.czar) {
     $('.hand-card').addClass('grey');
   } else {
     $('.hand-card').removeClass('grey');
   }
+
+  UpdateScore(clientState);
 });
 
-socket.on('scoreUpdated', function (scoreboard) {
+function UpdateScore(clientState) {
   if (isGameOver) {
     return;
   }
+  var scoreboard = clientState.scoreboard;
   $('.scores').empty();
   scoreboard.currentScores.forEach(function (userScore) {
-    $('.scores').append($('<li class="score">').text(userScore.name + ': ' + userScore.score));
+    var score = $('<li class="score">');
+    console.log('username', userScore.name);
+    console.log('czar', clientState.czar);
+    if (userScore.name === clientState.czar) {
+      score.addClass('czar');
+    }
+    $('.scores').append(score.text(userScore.name + ': ' + userScore.score).data('name',
+      userScore.name));
   });
   var numberOfRounds = scoreboard.rounds.length;
   if (numberOfRounds > 0) {
@@ -77,8 +87,8 @@ socket.on('scoreUpdated', function (scoreboard) {
   } else {
     $('.last-question, .last-answer, .last-winner').text('');
   }
+}
 
-});
 socket.on('gameOver', function (rounds) {
   var winner = rounds[0].winner;
   $('body').html('<h1><pre>The winner is: ' + winner + '</pre></h1>');

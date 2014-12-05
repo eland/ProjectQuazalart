@@ -1,5 +1,6 @@
 var state = require('../state');
 var score = require('../score');
+var clientState = require('../clientState');
 var startRound = require('../actions/startRound');
 
 module.exports = function (io, socket) {
@@ -11,13 +12,16 @@ module.exports = function (io, socket) {
     }
     if (state.round.czar.name === name) {
       startRound();
-      io.emit('roundUpdated', state.round);
+      clientState.currentRound = state.round;
+      clientState.czar = state.round.czar.name;
     }
     if (state.users[name]) {
       state.users[name].isActive = false;
       delete state.userMap[socket.id];
-      io.emit('scoreUpdated', score.scoreboard());
+      clientState.scoreboard = score.scoreboard();
       console.log(name, 'disconnected');
     }
+
+    io.emit('roundUpdated', clientState);
   };
 };

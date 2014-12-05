@@ -67,16 +67,29 @@
     .scores li {
       flex-flow: row wrap;
       padding-right:20px;
+
+    }
+
+    .czar {
+      font-weight: bold;
+      color: red;
     }
 
     .previous-round {
-      background-color: teal;
-      width: 300px;
-      min-height:30px;
+      padding-top: 10px;
     }
 
     .last-answer {
-      background-color: yellow;
+    }
+
+    .last-winner {
+      font-size: 2em;
+      font-weight: bolder;
+    }
+
+    .last-winner-container {
+      display: inline-block;
+      width: 100%;
     }
 
     .hand{
@@ -94,9 +107,6 @@
     <div class="scorebox box">
       <ul class="scores">
       </ul>
-      <div class="previous-round last-question"></div>
-      <div class="previous-round last-answer"></div>
-      <div class="previous-round last-winner"></div>
     </div>
     <div class="box">
       <div class="current-question question card black_card" ></div>
@@ -109,6 +119,15 @@
       <form action="">
         <input id="message-input" autocomplete="off" /><button>Send</button>
       </form>
+      <div class='box previous-round'>
+      <h1>Previous Round:</h1>
+          <div class="last-question card black_card"></div>
+          <div class="last-answer card"></div>
+          <div class='last-winner-container'>
+        <h1>Winner: </h1>
+      <div class="last-winner"></div>
+      </div>
+      </div>
     </div>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
