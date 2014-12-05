@@ -24,6 +24,9 @@ app.get('/', function (req, res) {
 app.get('/app.js', function (req, res) {
   res.sendFile(__dirname + '/client/app.js');
 });
+app.get('/css/cards.css', function (req, res) {
+  res.sendFile(__dirname + '/client/css/cards.css');
+});
 
 io.on('connection', function (socket) {
   socket.emit('authenticate');

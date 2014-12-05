@@ -46,7 +46,7 @@ socket.on('roundUpdated', function (_round) {
           key]
         .text));
     } else {
-      $('.answers').append($('<div class="card answer-card">').text("*************"));
+      $('.answers').append($('<div class="card answer-card">').text("Cards Against Humanity"));
     }
   });
   if (user.name === round.czar.name) {

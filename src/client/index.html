@@ -1,7 +1,8 @@
 <!doctype html>
 <html>
 <head>
-  <title>Socket.IO chat</title>
+  <title>Cards Against Humanity IDS Style</title>
+  <link rel="stylesheet" href="/css/cards.css" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font: 13px Helvetica, Arial; }
@@ -45,10 +46,6 @@
     .box {
       flex: 1 33%;
     }
-    .card {
-      color: maroon;
-      border: 1px solid white;
-    }
 
     .czar {
       background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Nicholas_II_by_Boissonnas_%26_Eggler_c1909.jpg/220px-Nicholas_II_by_Boissonnas_%26_Eggler_c1909.jpg);
@@ -58,26 +55,25 @@
       font-size: 20px;
     }
 
-    .hand-card{
-
-    }
     .card:hover{
-      border: 1px solid blue;
       cursor: pointer;
     }
-    .card:nth-child(odd){
-      background: #eee;
+
+    .black_card:hover{
+      cursor: none;
+      position:relative;
+      top:0;
     }
+
     .scores{
 
     }
   </style>
-
 </head>
 <body>
   <div class="boxes">
     <div class="box">
-      <div class="question" ></div>
+      <div class="question card black_card" ></div>
       <div class="answers"></div>
     </div>
     <div class="hand box">
