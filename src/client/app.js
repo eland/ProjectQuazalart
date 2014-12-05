@@ -40,7 +40,6 @@ socket.on('roundUpdated', function (_round) {
   round = _round;
   $('.question').text(round.question.text);
   $('.answers').empty();
-
   Object.keys(round.submittedAnswers).forEach(function (key) {
     $('.answers').append($('<div class="card answer-card">').data('name', key).text(round.submittedAnswers[key]
       .text));
@@ -50,6 +49,14 @@ socket.on('roundUpdated', function (_round) {
   } else {
     $('.hand').removeClass('czar');
   }
+});
+
+socket.on('scoreUpdated', function (_userScores) {
+  $('.scores').empty();
+  _userScores.forEach(function (userScore) {
+    $('.scores').append($('<li class="score">').text(userScore.name + ': ' + userScore.score));
+  });
+
 });
 
 $(document).on('click', '.hand-card', function () {

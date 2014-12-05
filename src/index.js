@@ -47,6 +47,7 @@ io.on('connection', function (socket) {
     }
     state.users[name].isActive = false;
     delete state.userMap[socket.id];
+    io.emit('scoreUpdated', state.getUserScores());
     console.log(name, 'disconnected');
   });
 
@@ -59,7 +60,7 @@ io.on('connection', function (socket) {
 
   socket.on('answerChosen', function (name) {
     state.users[name].score++;
-
+    io.emit('scoreUpdated', state.getUserScores());
     startRound();
 
     console.log('answer chosen! Round winner:', name);

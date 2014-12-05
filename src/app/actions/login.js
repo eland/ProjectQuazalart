@@ -29,5 +29,6 @@ module.exports = function (io, socket) {
 
     socket.emit('user', state.users[name]);
     socket.emit('roundUpdated', state.round);
+    io.emit('scoreUpdated', state.getUserScores());
   };
 };
