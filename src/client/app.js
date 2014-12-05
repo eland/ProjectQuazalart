@@ -36,6 +36,19 @@ socket.on('user', function (_user) {
   });
 });
 
+function appendAnswer(answers, name, placeholder) {
+  var answerGroup = $('<div class="answer-group">');
+  if (answers.length > 1) {
+    answerGroup.addClass('clearfix');
+  }
+  answers.forEach(function (answer) {
+    console.log(answer || placeholder);
+    answerGroup.append($('<div class="card answer-card">').data('name', name).text(placeholder || answer.text));
+  });
+
+  $('.answers').append(answerGroup);
+}
+
 var round = {};
 socket.on('roundUpdated', function (clientState) {
   if (isGameOver) {
@@ -46,11 +59,9 @@ socket.on('roundUpdated', function (clientState) {
   $('.answers').empty();
   Object.keys(round.submittedAnswers).forEach(function (key) {
     if (round.czarTime) {
-      $('.answers').append($('<div class="card answer-card">').data('name', key).text(round.submittedAnswers[
-          key]
-        .text));
+      appendAnswer(round.submittedAnswers[key], key);
     } else {
-      $('.answers').append($('<div class="card answer-card">').text("Cards Against Humanity"));
+      appendAnswer(round.submittedAnswers[key], key, "Cards Against Humanity");
     }
   });
   if (user.name === clientState.czar) {
@@ -62,10 +73,13 @@ socket.on('roundUpdated', function (clientState) {
   UpdateScore(clientState);
 });
 
-function UpdateScore(clientState) {
+var clientState = {};
+
+function UpdateScore(_clientState) {
   if (isGameOver) {
     return;
   }
+  clientState = _clientState;
   var scoreboard = clientState.scoreboard;
   $('.scores').empty();
   scoreboard.currentScores.forEach(function (userScore) {
@@ -82,7 +96,11 @@ function UpdateScore(clientState) {
   if (numberOfRounds > 0) {
     var lastRound = scoreboard.rounds[numberOfRounds - 1];
     $('.last-question').text(lastRound.question.text);
-    $('.last-answer').text(lastRound.winningAnswer.text);
+    $('.last-answer').empty();
+    lastRound.winningAnswers.forEach(function (answer) {
+      $('.last-answer').append('<div class="card">' + answer.text + '</div>');
+    });
+
     $('.last-winner').text(lastRound.winner);
   } else {
     $('.last-question, .last-answer, .last-winner').text('');
@@ -93,14 +111,45 @@ socket.on('gameOver', function (rounds) {
   var winner = rounds[0].winner;
   $('body').html('<h1><pre>The winner is: ' + winner + '</pre></h1>');
   rounds.forEach(function (round) {
-    $('body').append($('<div class="question card black_card">').text(round.question.text)).append($(
-      '<div class="card">').text(round.winningAnswer.text));
+    $('body').append($('<div style="clear: both">'));
+    $('body').append($('<div class="question card black_card">').text(round.question.text));
+    round.winningAnswers.forEach(function (answer) {
+      $('body').append($('<div class="card">').text(answer.text));
+    });
+
   });
   isGameOver = true;
 });
+var selectedAnswers = [];
 $(document).on('click', '.hand-card', function () {
+  var round = clientState.currentRound;
+  if (round.submittedAnswers.hasOwnProperty(user.name) || round.czar === user.name) {
+    return;
+  }
   element = $(this);
-  socket.emit('answerSubmitted', element.data('card'));
+  var card = element.data('card');
+  if (element.hasClass('selected-hand-card')) {
+    var indexOfRemovedCard = 0;
+    console.log(selectedAnswers);
+    selectedAnswers.forEach(function (answer, index) {
+      console.log(answer.id, card.id);
+      if (answer.id === card.id) {
+        indexOfRemovedCard = index;
+      }
+      element.removeClass('selected-hand-card');
+      return false;
+    });
+    console.log('removing ', indexOfRemovedCard);
+    selectedAnswers.splice(indexOfRemovedCard, 1);
+  } else {
+    element.addClass('selected-hand-card');
+    selectedAnswers.push(card);
+  }
+
+  if (round.question.numAnswers === $('.selected-hand-card').length) {
+    socket.emit('answersSubmitted', selectedAnswers);
+    selectedAnswers = [];
+  }
   return false;
 });
 

@@ -95,6 +95,19 @@
     .hand{
       min-width:400px;
     }
+    .selected-hand-card{
+      border: 1px solid blue;
+    }
+
+    .answer-group{
+      display: flex;
+      border-bottom: 3px solid red;
+      padding: 20px;
+    }
+
+    .clearfix{
+      clear:both;
+    }
     @media screen and (max-width: 500px) {
       .boxes {
         flex-flow: column wrap;
@@ -122,7 +135,7 @@
       <div class='box previous-round'>
       <h1>Previous Round:</h1>
           <div class="last-question card black_card"></div>
-          <div class="last-answer card"></div>
+          <div class="last-answer"></div>
           <div class='last-winner-container'>
         <h1>Winner: </h1>
       <div class="last-winner"></div>

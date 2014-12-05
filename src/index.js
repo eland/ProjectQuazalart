@@ -9,7 +9,7 @@ var Round = require('./app/round');
 var initGame = require('./app/actions/initGame');
 
 var answerChosen = require('./app/events/answerChosen');
-var answerSubmitted = require('./app/events/answerSubmitted');
+var answersSubmitted = require('./app/events/answersSubmitted');
 var disconnect = require('./app/events/disconnect');
 var login = require('./app/events/login');
 
@@ -38,7 +38,7 @@ io.on('connection', function (socket) {
     io.emit('chat message', state.userMap[socket.id] + ': ' + msg);
   });
 
-  socket.on('answerSubmitted', answerSubmitted(io, socket));
+  socket.on('answersSubmitted', answersSubmitted(io, socket));
 
   socket.on('answerChosen', answerChosen(io));
 });

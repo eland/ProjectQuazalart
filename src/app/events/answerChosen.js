@@ -6,13 +6,14 @@ var initGame = require('../actions/initGame');
 
 module.exports = function (io) {
   return function (name) {
+    console.log(name);
     state.users[name].score++;
-    var selectedAnswer = state.round.submittedAnswers[name];
-    state.round.winningAnswer = selectedAnswer;
+    var selectedAnswers = state.round.submittedAnswers[name];
+    state.round.winningAnswers = selectedAnswers;
     state.round.winner = name;
     score.rounds.push(state.round);
     clientState.scoreboard = score.scoreboard();
-    if (state.users[name].score > 4) {
+    if (state.users[name].score > 2) {
       io.emit("gameOver", score.rounds.filter(function (round) {
         return round.winner === name;
       }));
