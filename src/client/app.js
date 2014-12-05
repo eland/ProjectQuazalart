@@ -50,7 +50,7 @@ socket.on('roundUpdated', function (_round) {
     }
   });
   if (user.name === round.czar.name) {
-    $('.hand').addClass('czar');
+    $('.czarIndicator').addClass('czar');
   } else {
     $('.hand').removeClass('czar');
   }
